@@ -45,18 +45,13 @@ void setup(void)
 
 void loop(void) 
 { 
- uint16_t x = tsl.getLuminosity(TSL2591_VISIBLE); 
+ uint16_t x = tsl.getLuminosity(TSL2591_VISIBLE);        
 
- digitalWrite(trigPin, HIGH);
- delay(1000); 
- digitalWrite(trigPin, LOW);
- duracion = pulseIn(echoPin, HIGH); //Tiempo en microsegundos en recibir el pulso
- //se calcula la distancia en cm dependiendo de la velocidad del sonido
- distancia = (duracion/2)/29.1; //velocidad del sonido: 343 m/s                     
+       lectura_distancia();
            
  switch (estado) 
  {
-  case 0:  if (x >350) //Encendido del motor
+  case 0:  if (x >350 && distancia>30) //Encendido del motor
             {
               // Motor gira en un sentido
               digitalWrite (IN4, HIGH);
@@ -77,7 +72,7 @@ void loop(void)
              } 
    break;
              
-   case 1: if (distancia<30)
+   case 1:  if (distancia<30 && x >350)
             { 
               digitalWrite (IN4,LOW); 
               digitalWrite (IN3, LOW);
@@ -90,10 +85,17 @@ void loop(void)
              estado=1;
              Serial.print("Distancia: ");
              Serial.println(distancia);
-        
-             delay(10);  
             }
    break;
- }
-  
+ }  
 }
+
+ void lectura_distancia(void)
+ {
+  digitalWrite(trigPin, HIGH);
+       delay(1000); 
+       digitalWrite(trigPin, LOW);
+       duracion = pulseIn(echoPin, HIGH); //Tiempo en microsegundos en recibir el pulso
+       //se calcula la distancia en cm dependiendo de la velocidad del sonido
+       distancia = (duracion/2)/29.1; //velocidad del sonido: 343 m/s
+ }
