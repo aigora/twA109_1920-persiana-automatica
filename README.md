@@ -1,5 +1,4 @@
-# Título del trabajo
-Persiana automática
+# Persiana automática
 
 Desarrollar un motor que permita subir la persiana de una habitación mediante un sistema de reducido tamaño de poleas y carretes, que se activa con un sensor lumínico. Cuando el sensor haya detectado un determinado nivel de iluminación (correspondiente al del amanecer), este manadará una señal al ordenador para que active un motor que hará que suba la persiana medienate un carrete, todo a través de una placa Arduino.
 
