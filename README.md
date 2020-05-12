@@ -5,7 +5,7 @@ Desarrollar un motor que permita subir la persiana de una habitación mediante u
 ## Integrantes del equipo
 
 Nombre y apellidos: Inés Portilla de Birazel
-Usuario GitHub: InesPortilla
+Usuario GitHub: @InesPortilla
 
 ## Objetivos del trabajo
 -Consultar tutoriales y guías de Arduino para rofundizar mi conocimiento en programación con Arduino. En especial en cuanto a sensores lumínicos (entrada) y mini motores (salida).
@@ -63,7 +63,7 @@ Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591)
 * Nombre: configureSensor 
 * Nombre biblioteca: <Adafruit_Sensor.h> 
 * Argumentos y salida: void (no es necesario insertar ni devolver valores) 
-* Procesamiento: Se configura la ganancia (cuán sensible será el sensor a la luz que reciba) y el tiempo de integración (durante cuánto tiempo tomarán las muestras de luz). Para el proyecto se escogió una ganancia media (usada para propósitos más generales) y un tiempo ed integración de 300 milisegundos (la mediana dentro del rango de los valores de tiempo del sensor). 
+* Procesamiento: Se configura la ganancia (cuán sensible será el sensor a la luz que reciba) y el tiempo de integración (durante cuánto tiempo tomarán las muestras de luz). Para el proyecto se escogió una ganancia media (usada para propósitos más generales) y un tiempo de integración de 300 milisegundos (la mediana dentro del rango de los valores de tiempo del sensor). 
  
  ```
 void configureSensor(void) 
@@ -86,9 +86,8 @@ void configureSensor(void)
 
 # Sensores y actuadores
 
-## Título y resumen
-_Persiana automática con Arduino_
-Sistema electrónico conformado por un pequeño motor DC que provoca el giro de un carrete cuya cuerda está enganchada a la polea de la persiana, para poder subirla automáticamente. Para tal efecto, el motor se activa con un sensor lumínico cuando este detecta un nivel de iluminación correspondiente al del amanecer. Esta comunicación entre el sensor (entrada) y el motor (salida) se efectúa a través de un microcontrolador de Arduino. Después, el motor para de girar cuando, al estar subiéndose la persiana, un sensor de ultrasonido (ubicado unos centímetros debajo del rollo de la persiana) detecta el borde inferior de esta.
+## Persiana automática con Arduino
+Sistema electrónico conformado por un pequeño motor DC que provoca el giro de un carrete que hace rotatar la barra de la persiana, para poder subirla y bajarla automáticamente. Para tal efecto, el motor se activa con un sensor lumínico cuando este detecta un nivel de iluminación correspondiente al crepúsculo (salida y puesta del sol). Esta comunicación entre el sensor (entrada) y el motor (salida) se efectúa a través de un microcontrolador de Arduino. Después, el motor para de girar cuando, al estar subiéndose la persiana, un sensor de ultrasonido (ubicado unos centímetros debajo del rollo de la persiana) detecta el borde inferior de esta.
 
 ## Requisitos funcionales 
 1. El proceso se inicia cuando el sensor detecta una intensidad lumínica equivalente a un amanecer (600 lux aproximadamente). 
@@ -98,9 +97,11 @@ Sistema electrónico conformado por un pequeño motor DC que provoca el giro de 
 ## Hardware – Fundamentos técnicos 
 
 ### Detección de luz solar - Sensor de luz TSL2592 High Adafruit para Arduino
-  Un sensor de luz permite leer y hacer cálculos con la luz que detecta. Tiene varias aplicaciones, entre ellas en alumbrados públicos automáticos, sistemas de seguridad, como regulador de brillo en las pantallas de aparatos electrónicos (ordenadores y móviles, por ejemplo), e incluso como medidores de luz en las cámaras. Las ventajas de este tipo de sensores son su disponibilidad de formas y tamaños, su bajo coste, son sencillos de programar e incluso necesitan poco voltaje para funcionar (funcionan con 5V de potencia que puede proporcionar el microcontrolador de Arduino Uno). No obstante, los diodos de los sensores lumínicos son sensibles a las temperaturas y son unidireccionales. 
-  En lo que concierne a este sensor en particular, su rango de medición de intensidad lumínica que abarca de 188 uLux a 88,000 Lux y soporta una temperatura de –30 a 80°C. Además, al incluir diodos infrarrojos y de espectro completo, es capaz de hacer mediciones en varios espectros de luz por separado, incluyendo el de luz visible. Funciona con un voltaje entre 3,3 y 5V. En comparación con otras células fotovoltaicas de bajo coste (como las de cadmio) esta realiza mediciones más precisas, permitiendo así ser configurado para distintos rangos de tiempo y ganancia. Tiene varios pines de funcionamiento, unos de potencia (para encenderlo y para regular su voltaje) y otros de lógica I2C (pines clock y data). 
-  Se conecta al microcontrolador de la siguiente manera: 
+  Un sensor de luz permite leer y hacer cálculos con la luz que detecta. Tiene varias aplicaciones, entre ellas en alumbrados públicos automáticos, sistemas de seguridad, como regulador de brillo en las pantallas de aparatos electrónicos (ordenadores y móviles, por ejemplo), e incluso como medidores de luz en las cámaras. Las ventajas de este tipo de sensores son su disponibilidad de formas y tamaños, su bajo coste, son sencillos de programar e incluso necesitan poco voltaje para funcionar (funcionan con 5V de potencia que puede proporcionar el microcontrolador de Arduino Uno). No obstante, los diodos de los sensores lumínicos son sensibles a las temperaturas y son unidireccionales.   
+   
+   En lo que concierne a este sensor en particular, su rango de medición de intensidad lumínica que abarca de 188 uLux a 88,000 Lux y soporta una temperatura de –30 a 80°C. Además, al incluir diodos infrarrojos y de espectro completo, es capaz de hacer mediciones en varios espectros de luz por separado, incluyendo el de luz visible. Funciona con un voltaje entre 3,3 y 5V. En comparación con otras células fotovoltaicas de bajo coste (como las de cadmio) esta realiza mediciones más precisas, permitiendo así ser configurado para distintos rangos de tiempo y ganancia. Tiene varios pines de funcionamiento, unos de potencia (para encenderlo y para regular su voltaje) y otros de lógica I2C (pines clock y data).  
+    
+    Se conecta al microcontrolador de la siguiente manera: 
  
   ![Alt text](https://cdn-learn.adafruit.com/assets/assets/000/017/910/original/sensors_arduinowire.jpg?1405023389)
  
@@ -138,14 +139,18 @@ Serial.println(x, DEC);
 ```
  
 ### Funcionamiento del carrete – Mini motor DC
-  Un motor de corriente continua es un aparato que puede convertir energía eléctrica en mecánica, realizando un movimiento rotatorio. Consta de dos partes: una parte fija compuesta por un electroimán, que es puesto en marcha por dos campos magnéticos de polaridades opuestas situados en el extremo al cual se conecta la corriente. A su vez, estos dos campos inducen la fuerza necesaria sobre la parte móvil para hacerle girar, aplicando un torque. Esta otra parte está compuesta por varios espirales o bobinas, que al girar hacen rotar una protuberancia metálica. Gracias a su versatilidad (por su fácil control, paro y automatización) resulta útil en contextos industriales y domésticos. Por ejemplo, se encuentran motores DC en maquinillas eléctricas, en los limpiaparabrisas e incluso en motores de coches. 
-  El motor que se usará en concreto para este proyecto es un mini motor reductor 250:1 de alta potencia. Tiene un voltaje nominal de 6 voltios (aunque funciona bien con 9V proporcionados por una batería a través de un Puente H), su velocidad de salida es de 50 rpm y tienen un consumo sin carga de 30mA. Las cualidades de este motor son su resistencia a las temperaturas y a la abrasión y su gran capacidad de carga. En particular, la protuberancia (mediante la cual se hará girar el carrete) está hecha con acero de alta calidad, alta dureza y resistencia. 
-  Para poder manipular este motor mediante Arduino y una batería de 9V es necesario el uso (aparte de cables, por supuesto) de un Puente H. Este es un dispositivo que permite manipular el sentido de giro de un motor de corriente continua (el cual depende de la polaridad de la fuente de alimentación), sin necesidad de invertir la batería. También es considerado como un driver, pues aporta más corriente de la que puede aportar el microcontrolador de Arduino. 
-  Así pues, es necesario conectar la batería a los inputs +12 y GND del Puente H, a la vez que este GND se conecta al del Arduino Uno, y luego conectar las terminales del motor a cualquiera de los dos pares de outputs. Ahora, el número de los pines de salida del puente han de conectarse a los pines digitales del Arduino del mismo número (siendo uno de ellos un PWM). Para combinar todos estos aparatos se monta el circuito como se muestra en el diagrama:  
+  Un motor de corriente continua es un aparato que puede convertir energía eléctrica en mecánica, realizando un movimiento rotatorio. Consta de dos partes: una parte fija compuesta por un electroimán, que es puesto en marcha por dos campos magnéticos de polaridades opuestas situados en el extremo al cual se conecta la corriente. A su vez, estos dos campos inducen la fuerza necesaria sobre la parte móvil para hacerle girar, aplicando un torque. Esta otra parte está compuesta por varios espirales o bobinas, que al girar hacen rotar una protuberancia metálica. Gracias a su versatilidad (por su fácil control, paro y automatización) resulta útil en contextos industriales y domésticos. Por ejemplo, se encuentran motores DC en maquinillas eléctricas, en los limpiaparabrisas e incluso en motores de coches.  
+   
+   El motor que se usará en concreto para este proyecto es un mini motor reductor 250:1 de alta potencia. Tiene un voltaje nominal de 6 voltios (aunque funciona bien con 9V proporcionados por una batería a través de un Puente H), su velocidad de salida es de 50 rpm y tienen un consumo sin carga de 30mA. Las cualidades de este motor son su resistencia a las temperaturas y a la abrasión y su gran capacidad de carga. En particular, la protuberancia (mediante la cual se hará girar el carrete) está hecha con acero de alta calidad, alta dureza y resistencia.  
+   
+   Para poder manipular este motor mediante Arduino y una batería de 9V es necesario el uso (aparte de cables, por supuesto) de un Puente H. Este es un dispositivo que permite manipular el sentido de giro de un motor de corriente continua (el cual depende de la polaridad de la fuente de alimentación), sin necesidad de invertir la batería. También es considerado como un driver, pues aporta más corriente de la que puede aportar el microcontrolador de Arduino.  
+   
+   Así pues, es necesario conectar la batería a los inputs +12 y GND del Puente H, a la vez que este GND se conecta al del Arduino Uno, y luego conectar las terminales del motor a cualquiera de los dos pares de outputs. Ahora, el número de los pines de salida del puente han de conectarse a los pines digitales del Arduino del mismo número (siendo uno de ellos un PWM). Para combinar todos estos aparatos se monta el circuito como se muestra en el diagrama:  
  
  ![Alt Text](file:///Users/Ines/Desktop/Captura%20de%20Pantalla%202020-04-22%20a%20la(s)%2011.33.14%20p.%C2%A0m.png?raw=true)
  
-Y se activa con este código:  
+Y se activa con este código: 
+
 ```
 #define IN3 5 
 #define IN4 4  
@@ -163,9 +168,67 @@ void loop() {
 } 
 ```
  
-### Sensor Ultrasonido
+### Detener el motor - Sensor Ultrasonido
+ Un sensor de ultrasonidos es un dispositivo empleado para medir distancias mediante el envío de un pulso de alta frecuencia (no audible por el ser humano) que rebota en los objetos cercanos y vuelve al ultrasonido. Esto es posible gracias a que tiene un micrófono integrado adecuado para esta frecuencia. Más en detalle, conociendo la velocidad del sonido y midiendo el tiempo entre pulsos se puede estimar la medida de la distancia entre el dispositivo y el objeto más cercano.  
  
+ Sabiendo que la velocidad del sonido es 343m/s, sus unidades se tranforman a centímetros por microsegundos:  
  
+ 343 m/s → 1/29.2 cm/µs  
+ 
+ Distancia (cm) = Tiempo(µs)/29.2x2  
+ 
+ Se divide el tiempo entre dos porque por defecto el sensor lee la distancia de ida y vuelta pero solo se necesitamos la mitad de la distancia total (que vendría siendo la "ida" o la "vuelta" del pulso).  
+ 
+ Los sensores de ultrasonido son sensores de baja precisión, es decir, la orientación de la superficie a medir puede provocar que la onda se refleje, falseando la medición. Además, no son muy adecuados para entornos con un gran número de objetos ni para ser usado en exteriores. Sin embargo, este sensor es para ser usado en el interior del marco de una persiana, apuntando al otro extremo interior del marco, y dentro de un entorno doméstico. Incluso, su rango de medición real es de 20cm a 2m, apropiado para lo que se quiere usar. Son sensores muy utilizandos dentro del mundo de la robótica, son baratos y sencillos de usar.
+ Se ensambla a la protoboard de la siguiente manera:
+ 
+  ![Alt text](https://www.luisllamas.es/wp-content/uploads/2015/06/arduino-ultrasonidos-montaje.png)
+ 
+ Y para medir las distancias se usará eeste código, como base:
+ 
+```
+#define IN3 5
+#define IN4 4 
+#define echoPin 8 // Echo Pin
+#define trigPin 9 // Trigger Pin
+
+float duracion, distancia; 
+
+void setup() {
+  Serial.begin (9600);
+  
+  pinMode(trigPin, OUTPUT);     //pines del sensor de ultrasonido
+  pinMode(echoPin, INPUT);
+
+  pinMode (IN4, OUTPUT);
+  pinMode (IN3, OUTPUT);
+  }
+
+void loop() 
+{
+  
+  digitalWrite (IN4, HIGH); //Se enciende el motor
+  digitalWrite (IN3, LOW);
+  
+  digitalWrite(trigPin, HIGH);
+  delay(5000); 
+  digitalWrite(trigPin, LOW);
+  
+  duracion = pulseIn(echoPin, HIGH); //Tiempo en microsegundos en recibir el pulso
+  
+  //se calcula la distancia en cm dependiendo de la velocidad del sonido
+  distancia = (duracion/2)/29.1; //velocidad del sonido: 343 m/s
+
+  if (distancia<30)
+  { digitalWrite (IN4,LOW); }
+  else
+  {  Serial.print("Distancia: ");
+     Serial.println(distancia);
+     delay(10)
+     }
+ }
+ ```
+
 ## Referencias 
   Adafruit Industries. (2018). Adafruit TSL2591 High Dynamic Range Digital Light Sensor[Ebook (1st ed., pp. 3-18). Retrieved from 
 https://www.cetronic.es/sqlcommerce/disenos/plantilla1/seccion/producto/DetalleProducto.jsp?idIdioma=&idTienda=93&codProducto=999334022&cPath=1343&gclid=Cj0KCQiA-bjyBRCcARIsAFboWg2jEmebQvp0diffuzqg05AEinYSC8SN61KRFypkkhpYK0qUlXu4z-MaAphUEALw_wcB 
