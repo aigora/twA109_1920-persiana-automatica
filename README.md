@@ -89,7 +89,7 @@ Serial.println(x, DEC);
    
    Así pues, es necesario conectar la batería a los inputs +12 y GND del Puente H, a la vez que este GND se conecta al del Arduino Uno, y luego conectar las terminales del motor a cualquiera de los dos pares de outputs. Ahora, el número de los pines de salida del puente han de conectarse a los pines digitales del Arduino del mismo número (siendo uno de ellos un PWM). Para combinar todos estos aparatos se monta el circuito como se muestra en el diagrama:  
  
- ![Alt Text](file:///Users/Ines/Desktop/Captura%20de%20Pantalla%202020-04-22%20a%20la(s)%2011.33.14%20p.%C2%A0m.png?raw=true)
+ ![Alt Text](https://electronilab.co/wp-content/uploads/2014/05/L298N_1_mot-1024x691.jpg)
  
 Y se activa con este código: 
 
@@ -358,6 +358,8 @@ long getTimeNow(){
 https://www.cetronic.es/sqlcommerce/disenos/plantilla1/seccion/producto/DetalleProducto.jsp?idIdioma=&idTienda=93&codProducto=999334022&cPath=1343&gclid=Cj0KCQiA-bjyBRCcARIsAFboWg2jEmebQvp0diffuzqg05AEinYSC8SN61KRFypkkhpYK0qUlXu4z-MaAphUEALw_wcB 
 
   CREA Club de robótica ETSIDI. (2019). Transistores Puente H. Presentation, Madrid. 
+
+  CREA Club de robótica ETSIDI. (2019). Pines digitales. Presentation, Madrid. 
   
   El mejor Reductor para motor eléctrico de 2020 | Las20Mejores.com. (2020). Retrieved 21 March 2020, from 
 https://las20mejores.com/mejor-reductor-para-motor-electrico/      
@@ -383,3 +385,8 @@ https://github.com/adafruit/Adafruit_TSL2591_Library/blob/master/examples/tsl259
   Llamas, L. (2015). Medir distancia con Arduino y sensor de ultrasonidos HC-SR04. Retrieved 18 April 2020, 
 from https://www.luisllamas.es/medir-distancia-con-arduino-y-sensor-de-ultrasonidos-hc-sr04/    
 
+Stoffregen, P. (2018). PaulStoffregen/Time. Retrieved 10 May 2020, from https://github.com/PaulStoffregen/Time
+
+Stoffregen, P. (2018). PaulStoffregen/Time/examples/Processing/SyncArduinoClock/SyncArduinoClock.pde. Retrieved 10 May 2020, from https://github.com/PaulStoffregen/Time/blob/master/examples/Processing/SyncArduinoClock/SyncArduinoClock.pde
+
+Stoffregen, P. (2020). PaulStoffregen/Time/examples/TimeSerial/TimeSerial.ino. Retrieved 10 May 2020, from https://github.com/PaulStoffregen/Time/blob/master/examples/TimeSerial/TimeSerial.ino
