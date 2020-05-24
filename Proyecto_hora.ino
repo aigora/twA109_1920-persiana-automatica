@@ -1,7 +1,10 @@
+// Este es el programa que permite programar la subida de la persiona en función de la hora. 
+//Para que funcione, deberá usarse en sincronía con el programa de Processing SyncArduinoClock 
+
 #include <TimeLib.h>
 
-#define TIME_HEADER  "T"   // Header tag for serial time sync message
-#define TIME_REQUEST  7    // ASCII bell character requests a time sync message 
+#define TIME_HEADER  "T"   // Etiqueta para establecer la comunicación serial entre Processing
+#define TIME_REQUEST  7    // Caracter ASCII para solicitar la sincronización 
 
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
@@ -31,7 +34,7 @@ void setup()
    
   //TIEMPO
   pinMode(13, OUTPUT);
- setSyncProvider( requestSync); //set function to call when sync required
+ setSyncProvider( requestSync); 
   Serial.println("Waiting for sync message");
 
   //SENSOR LUMÍNICO
@@ -162,8 +165,8 @@ void processSyncMessage()
      pctime = Serial.parseInt();
      if( pctime >= DEFAULT_TIME) 
      { 
-      // check the integer is a valid time (greater than Jan 1 2013)
-      setTime(pctime); // Sync Arduino clock to the time received on the serial por
+      // Comprueba si el número es válido como valor de tiempo (después del 1 enero 2013)
+      setTime(pctime); // Sincronizar el reloj de Arduino clock con el tiempo recibido por el puerto serial
   lectura_distancia();
      }
 }
@@ -171,7 +174,7 @@ void processSyncMessage()
 
 void digitalClockDisplay()
 {
-  // digital clock display of the time
+  //Muestra la hora recibida por el monitor serial
   Serial.print(hour());
   printDigits(minute());
   printDigits(second());
@@ -186,7 +189,6 @@ void digitalClockDisplay()
 
 void printDigits(int digits)
 {
-  // utility function for digital clock display: prints preceding colon and leading 0
   Serial.print(":");
   if(digits < 10)
     Serial.print('0');
@@ -206,5 +208,5 @@ void lectura_distancia(void)
 time_t requestSync()
 {
   Serial.write(TIME_REQUEST);  
-  return 0; // the time will be sent later in response to serial mesg
+  return 0; // El tiempo se mandará en respuesta al mensaje serial
 }
