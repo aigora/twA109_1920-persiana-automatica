@@ -5,84 +5,26 @@ Desarrollar un motor que permita subir la persiana de una habitación mediante u
 ## Integrantes del equipo
 
 Nombre y apellidos: Inés Portilla de Birazel  
+Número de matrícula: 55409
 Usuario GitHub: @InesPortilla
 
 ## Objetivos del trabajo
--Consultar tutoriales y guías de Arduino para rofundizar mi conocimiento en programación con Arduino. En especial en cuanto a sensores lumínicos (entrada) y mini motores (salida).  
+-Consultar tutoriales y guías de Arduino para rofundizar mi conocimiento en programación con Arduino. En especial en cuanto a sensores lumínicos y de ultrasonidos (entrada) y mini motores (salida).  
+-Configurar un sensor lumínico para que envíe datos al programa justo después de leer un determinado nivel de iluminación.  
+-Configurar un sensor ultrasonido para que envíe datos al programa justo después de leer una distancia hasta la superficie más cercana a este.  
+-Enviar datos de la hora actual desde el reloj integrado en un ordenador al programa.
 -Programar el sensor para que envíe datos al PC justo después de leer un determinado nivel de iluminación.  
--Transmitir estos datos al PC y hacer que este active un motor.  
--Desarrollar una polea que funcione a través de un motor que se activa con los datos que reciba del odenador, que permita llevar a cabo el movimiento vertical de bajar la persiana.
+-Activar un motor al recibirse un dato específico (de luminosidad, distancia o tiempo).  
+-Desarrollar un modelo reducido de una ventana con persiana, que permita llevar a cabo el movimiento vertical resultante de subirla y bajarla.
 
 ## Hardware
-PC, Arduino UNO Rev. 3, sensor de luz para Arduino, mini motor eléctrico.
+PC o Mac, placa Arduino UNO Rev. 3, sensor de luz para Arduino, mini motor eléctrico, sensor de ultrasonido, protoboard, cables, cable para batería de 9V, puente H, batería de 9 voltios.
+
+## Materiales para la ventana
+Un marco de madera (el marco de una caja de vino), dos tubos de cartón piedra de distintos radios, un carrete, un trozo de tela de 30x50 cm aproximadamente, tornillos (para aferrar las placas al marco), silicona caliente, un trozo plano de madera de 0,5x1,5x9,5 cm, cuatro clavos en L (para sujetar la protoboard y el trozo de matera), cinta de doble faz gruesa, y cinta americana.
 
 ## Software 
-Programación del microcontrolador a través del IDE de Arduino
-
-# Funciones empleadas 
- 
-## Creadas 
- 
-### Lectura distancia con ultrasonido
-* Nombre: lectura_distancia 
-* Argumentos: void. No se le pide al usuario que introduzca un valor. 
-* Procesamiento:  
-1. Generar el disparo de ondas  
-2. Medir el tiempo entre pulsos (en microsegundos) 
-3. Convertir el tiempo a distancia total recorrida y dividirla entre dos (el ultrasonido lee la ida y la vuelta de las ondas, pero solo interesa cuánto recorrieron las ondas en un sentido). 
-
-Distancia (cm) = (Tiempo (μs))/(29,2*2)
-
-* Salida: Distancia desde el sensor hasta la superficie más cercana contra la que choquen las ondas verticalmente, aunque tampoco es necesario que devuelva un valor (de ahí que sea una función de tipo void). 
-```
-void lectura_distancia(void) 
-{ 
-  digitalWrite(trigPin, HIGH); 
-       delay(1000);  
-       digitalWrite(trigPin, LOW); 
-//Tiempo en microsegundos en recibir el pulso 
-       duracion = pulseIn(echoPin, HIGH);         
-//se calcula la distancia en cm dependiendo de la velocidad del sonido 
-       distancia = (duracion/2)/29.1; //velocidad del sonido: 343 m/s 
-} 
-```
-## De biblioteca 
-  Las siguientes funciones provienen de bibliotecas de uso público que se pueden conseguir de manera gratuita en un repositorio Git creado por Adafruit (la compañía que fabrica el sensor lumínico usado y demás productos electrónicos). 
-
-### Constructor 
-* Nombre biblioteca: Adafruit_TSL2591 
-* Nombre: Adafruit_TSL2591(2591) 
-* Argumentos: 2591 (el nombre del modelo del sensor lumínico). 
-* Procesamiento: Creación de una instancia de la biblioteca. 
-```
-Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591) 
-```
-* Salida: Uso del sensor lumínico TSL2591(2591) de Adafruit. 
- 
-### Configuración del sensor 
-* Nombre: configureSensor 
-* Nombre biblioteca: <Adafruit_Sensor.h> 
-* Argumentos y salida: void (no es necesario insertar ni devolver valores) 
-* Procesamiento: Se configura la ganancia (cuán sensible será el sensor a la luz que reciba) y el tiempo de integración (durante cuánto tiempo tomarán las muestras de luz). Para el proyecto se escogió una ganancia media (usada para propósitos más generales) y un tiempo de integración de 300 milisegundos (la mediana dentro del rango de los valores de tiempo del sensor). 
- 
- ```
-void configureSensor(void) 
-{ 
-  tsl.setGain(TSL2591_GAIN_MED);       
-  tsl.setTiming(TSL2591_INTEGRATIONTIME_300MS); 
-} 
- ```
- 
-### Lectura intensidad lumínica 
-* Nombre biblioteca: <Adafruit_Sensor.h> 
-* Nombre: getLuminosity 
-* Argumentos: Diodos para detectar según qué tipo de radiación electromagnética (ultravioleta, luz visible, infrarrojo). En este caso se leerán valores dentro del espectro de luz visible. 
-* Procesamiento:  
-1. El diodo lee la intensidad lumínica de luz visible  percibida en el ambiente 
-2. Arroja el valor leído en Lux 
-```uint16_t x = tsl.getLuminosity(TSL2591_VISIBLE); ```  
-* Salida: Valor de la luminosidad leída en Lux (definida como x) de 16 bits. 
- 
+Programación del microcontrolador a través del IDE de Arduino y Processing.
 
 # Sensores y actuadores
 
@@ -228,6 +170,121 @@ void loop()
      }
  }
  ```
+
+# Funciones empleadas 
+ 
+## Creadas 
+ 
+### Lectura distancia con ultrasonido
+* Nombre: lectura_distancia 
+* Argumentos: void. No se le pide al usuario que introduzca un valor. 
+* Procesamiento:  
+1. Generar el disparo de ondas  
+2. Medir el tiempo entre pulsos (en microsegundos) 
+3. Convertir el tiempo a distancia total recorrida y dividirla entre dos (el ultrasonido lee la ida y la vuelta de las ondas, pero solo interesa cuánto recorrieron las ondas en un sentido). 
+
+Distancia (cm) = (Tiempo (μs))/(29,2*2)
+
+* Salida: Distancia desde el sensor hasta la superficie más cercana contra la que choquen las ondas verticalmente, aunque tampoco es necesario que devuelva un valor (de ahí que sea una función de tipo void). 
+```
+void lectura_distancia(void) 
+{ 
+  digitalWrite(trigPin, HIGH); 
+       delay(1000);  
+       digitalWrite(trigPin, LOW); 
+//Tiempo en microsegundos en recibir el pulso 
+       duracion = pulseIn(echoPin, HIGH);         
+//se calcula la distancia en cm dependiendo de la velocidad del sonido 
+       distancia = (duracion/2)/29.1; //velocidad del sonido: 343 m/s 
+} 
+```
+
+### Pedir sincronización del tiempo
+* Nombre: requestSync()
+* Argumentos: void. No se le pide al usuario que introduzca un valor. 
+* Procesamiento: 
+1. La biblioteca TimeLib detecta un desbordamiento en la función millis (se utiliza para contar el paso del tiempo).
+2. Envía a Processing un caracter (un 7, llamado TIME_HEADER) a través de l puerto serie.
+```
+time_t requestSync()
+{
+  Serial.write(TIME_REQUEST);
+  return 0; // the time will be sent later in response to serial mesg
+}
+```
+
+### Enviar datos del tiempo
+* Nombre: sendTimeMessage
+* Argumentos: void. No se le pide al usuario que introduzca un valor. 
+* Procesamiento: TIME_HEADER y el tiempo actual (t)
+1. Se lee el tiempo
+2. Se formatea y se envía a Arduino por el puerto serie
+```
+void sendTimeMessage(String header, long time) {
+  String timeStr = String.valueOf(time);
+  myPort.write(header);  // send header and time to arduino
+  myPort.write(timeStr);
+  myPort.write('\n');
+  ```
+
+### Sincronizar Arduino con la hora actual
+* Nombre: processSyncMessage()
+* Argumentos: TIME_HEADER
+* Procesamiento: 
+1. Mediante Serial.find(), detecta si ha recibido la señal de que Processing ha procesado y enviado el tiempo.
+2. Declara la variable pctime, donde almacena el tiempo leído por Processing.
+3. Sincroniza Arduino con la hora actual mediante setTime().
+
+## De biblioteca 
+  Las siguientes funciones provienen de bibliotecas de uso público que se pueden conseguir de manera gratuita en un repositorio Git creado por Adafruit (la compañía que fabrica el sensor lumínico usado y demás productos electrónicos). 
+
+### Constructor 
+* Nombre biblioteca: Adafruit_TSL2591 
+* Nombre: Adafruit_TSL2591(2591) 
+* Argumentos: 2591 (el nombre del modelo del sensor lumínico). 
+* Procesamiento: Creación de una instancia de la biblioteca. 
+```
+Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591) 
+```
+* Salida: Uso del sensor lumínico TSL2591(2591) de Adafruit. 
+ 
+### Configuración del sensor 
+* Nombre: configureSensor 
+* Nombre biblioteca: <Adafruit_Sensor.h> 
+* Argumentos y salida: void (no es necesario insertar ni devolver valores) 
+* Procesamiento: Se configura la ganancia (cuán sensible será el sensor a la luz que reciba) y el tiempo de integración (durante cuánto tiempo tomarán las muestras de luz). Para el proyecto se escogió una ganancia media (usada para propósitos más generales) y un tiempo de integración de 300 milisegundos (la mediana dentro del rango de los valores de tiempo del sensor). 
+ 
+ ```
+void configureSensor(void) 
+{ 
+  tsl.setGain(TSL2591_GAIN_MED);       
+  tsl.setTiming(TSL2591_INTEGRATIONTIME_300MS); 
+} 
+ ```
+ 
+### Lectura intensidad lumínica 
+* Nombre biblioteca: <Adafruit_Sensor.h> 
+* Nombre: getLuminosity 
+* Argumentos: Diodos para detectar según qué tipo de radiación electromagnética (ultravioleta, luz visible, infrarrojo). En este caso se leerán valores dentro del espectro de luz visible. 
+* Procesamiento:  
+1. El diodo lee la intensidad lumínica de luz visible  percibida en el ambiente 
+2. Arroja el valor leído en Lux 
+```uint16_t x = tsl.getLuminosity(TSL2591_VISIBLE); ```  
+* Salida: Valor de la luminosidad leída en Lux (definida como x) de 16 bits. 
+
+### Obtención de la hora 
+* Nombre biblioteca: processing.serial.*;
+* Nombre: getTimeNow() 
+* Argumentos: No aplica, pero devuelve la hora 
+* Procesamiento:  
+1. Se declara una variable (d) y se almacena en ella la hora, minutos y segundos actuales
+2. Devuelve el valor a la función sendTimeMessage()
+
+### Establecer el tiempo
+* Nombre biblioteca: Timelib.h
+* Nombre: setTime()
+* Argumentos: pctime (la hora del ordenador procesada)
+* Procesamiento: Establece en Arduino que la hora actual es la recibida desde Processing
 
 ## Referencias 
   Adafruit Industries. (2018). Adafruit TSL2591 High Dynamic Range Digital Light Sensor[Ebook (1st ed., pp. 3-18). Retrieved from 
