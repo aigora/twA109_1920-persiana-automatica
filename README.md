@@ -234,6 +234,60 @@ void sendTimeMessage(String header, long time) {
 1. Mediante Serial.find(), detecta si ha recibido la señal de que Processing ha procesado y enviado el tiempo.
 2. Declara la variable pctime, donde almacena el tiempo leído por Processing.
 3. Sincroniza Arduino con la hora actual mediante setTime().
+```
+void processSyncMessage() {
+  unsigned long pctime;
+  const unsigned long DEFAULT_TIME = 1357041600; // Jan 1 2013
+
+  if(Serial.find(TIME_HEADER)) {
+     pctime = Serial.parseInt();
+     if( pctime >= DEFAULT_TIME) { // check the integer is a valid time (greater than Jan 1 2013)
+       setTime(pctime); // Sync Arduino clock to the time received on the serial port
+     }
+  }
+}
+```
+### Mostrar por el monitor serie la hora actual
+* Nombre: digitalClockDisplay()
+* Argumentos: pctime
+* Procesamiento: Recibe la hora actual con el valor pctime y muesatra los datos por pantalla.
+```
+
+void digitalClockDisplay()
+{
+  // digital clock display of the time
+  Serial.print(hour());
+  printDigits(minute());
+  printDigits(second());
+  Serial.print(" ");
+  Serial.print(day());
+  Serial.print(" ");
+  Serial.print(month());
+  Serial.print(" ");
+  Serial.print(year()); 
+  Serial.println(); 
+}
+```
+
+### Imprimir los minutos y segundos
+* Nombre: printDigits()
+* Argumentos: digits (los minutos y segundos del pctime)
+* Procesamiento:
+1. Recibe los datos de los minutos y segundos procesados por Processing
+2. Imprime un doble punto (:) para separar cada unidad de tiempo
+3. Si el digito recibido es mayor que 0, se imprime
+
+```
+void printDigits(int digits)
+{
+  // utility function for digital clock display: prints preceding colon and leading 0
+  Serial.print(":");
+  if(digits < 10)
+    Serial.print('0');
+  Serial.print(digits);
+}
+```
+
 
 ## De biblioteca 
   Las siguientes funciones provienen de bibliotecas de uso público que se pueden conseguir de manera gratuita en un repositorio Git creado por Adafruit (la compañía que fabrica el sensor lumínico usado y demás productos electrónicos). 
@@ -279,12 +333,25 @@ void configureSensor(void)
 * Procesamiento:  
 1. Se declara una variable (d) y se almacena en ella la hora, minutos y segundos actuales
 2. Devuelve el valor a la función sendTimeMessage()
+```
+
+long getTimeNow(){
+  // java time is in ms, we want secs    
+  Date d = new Date();
+  Calendar cal = new GregorianCalendar();
+  long current = d.getTime()/1000;
+  long timezone = cal.get(cal.ZONE_OFFSET)/1000;
+  long daylight = cal.get(cal.DST_OFFSET)/1000;
+  return current + timezone + daylight; 
+}
+```
 
 ### Establecer el tiempo
 * Nombre biblioteca: Timelib.h
 * Nombre: setTime()
 * Argumentos: pctime (la hora del ordenador procesada)
 * Procesamiento: Establece en Arduino que la hora actual es la recibida desde Processing
+```setTime(pctime);```
 
 ## Referencias 
   Adafruit Industries. (2018). Adafruit TSL2591 High Dynamic Range Digital Light Sensor[Ebook (1st ed., pp. 3-18). Retrieved from 
